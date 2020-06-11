@@ -108,3 +108,28 @@ class FlattenLayer(nn.Module):
         super(FlattenLayer, self).__init__()
     def forward(self, x): # x shape: (batch, *, *, ...)
         return x.view(x.shape[0], -1)
+
+
+class MyDataset(torch.utils.data.Dataset):
+    def __init__(self, root, datatxt, transform=None, target_transform=None):
+        super(MyDataset, self).__init__()
+        fh = open(root + datacsv, 'r')
+        imgs = []
+        for line in fh:
+            line = line.rstrip()
+            words = line.split(',')
+            imgs.append((words[0], int(words[1])))
+        self.imgs = imgs
+        self.transform = transform
+        self.target_transform = target_transform
+
+    def __getitem__(self, index):
+        path, label = self.imgs[index]
+        img = Image.open(root + path).convert('1')
+
+        if self.transform is not None:
+            img = self.transform(img)
+        return img, label
+
+    def __len__(self):
+        return len(self.imgs)
