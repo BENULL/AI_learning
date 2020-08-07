@@ -8,6 +8,7 @@ import torchvision
 import torchvision.transforms as transforms
 import sys
 from torch import nn
+import zipfile
 
 # 3.3 linear regression
 # 设置显示svg图
@@ -130,7 +131,21 @@ class FlattenLayer(nn.Module):
     def forward(self, x): # x shape: (batch, *, *, ...)
         return x.view(x.shape[0], -1)
 
+# ######################### 6.3 #########################
 
+def load_data_jay_lyrics():
+    """加载周杰伦歌词数据集"""
+    with zipfile.ZipFile('../data/jaychou_lyrics.txt.zip') as zin:
+        with zin.open('jaychou_lyrics.txt') as f:
+            corpus_chars = f.read().decode('utf-8')
+    corpus_chars = corpus_chars.replace('\n', ' ').replace('\r', ' ')
+    corpus_chars = corpus_chars[0:10000]
+    idx_to_char = list(set(corpus_chars))
+    char_to_idx = dict([(char, i) for i, char in enumerate(idx_to_char)])
+    vocab_size = len(char_to_idx)
+    corpus_indices = [char_to_idx[char] for char in corpus_chars]
+    return corpus_indices, char_to_idx, idx_to_char, vocab_size
+    
 class MyDataset(torch.utils.data.Dataset):
     def __init__(self, root, datatxt, transform=None, target_transform=None):
         super(MyDataset, self).__init__()
