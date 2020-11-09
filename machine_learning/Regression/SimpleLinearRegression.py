@@ -47,10 +47,20 @@ class SimpleLinearRegression:
 
     def r2_score(self,y_test,y_predict):
         """计算y_true和y_predict之间的R Square"""
-        return 1 - mean_squared_error(y_true, y_predict) / np.var(y_true)
+        return 1 - self.mean_squared_error(y_true, y_predict) / np.var(y_true)
 
     def score(self, x_test, y_test):
         """根据测试数据集 x_test 和 y_test 确定当前模型的准确度"""
-
         y_predict = self.predict(x_test)
         return self.r2_score(y_test, y_predict)
+
+if __name__ == '__main__':
+    x = np.array([1., 2., 3., 4., 5.])
+    y = np.array([1., 3., 2., 3., 5.])
+    reg2 = SimpleLinearRegression()
+    reg2.fit(x, y)
+    x_predict = 6
+    print(reg2.predict(np.array([x_predict])))
+
+
+
